@@ -1,128 +1,110 @@
 public class HugeInteger {
+    private int[] digits = new int[40];
 
-    private static final int SIZE = 40;
-    private int[] digits = new int[SIZE];
-
-
-    public void parse(String value) {
-
-        for (int index = 0; index < digits.length; index++) {
-            digits[index] = 0;
+    public void parse(String number) {
+        for (int count = 0; count < digits.length; count++) {
+            digits[count] = 0;
         }
-        int arrayIndex = digits.length - value.length();
-
-        for (int index = 0; index < value.length(); index++) {
-            digits[arrayIndex + index] = Character.getNumericValue(value.charAt(index));
+        int start = 40 - number.length();
+        for (int count = 0; count < number.length(); count++) {
+            digits[start + count] = number.charAt(count) - '0';
         }
     }
 
-
-    @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        boolean leadingZero = true;
-        for (int digit : digits) {
-            if (digit != 0) {
-                leadingZero = false;
+        String result = "";
+        boolean started = false;
+        for (int count = 0; count < digits.length; count++) {
+            if (digits[count] != 0) {
+                started = true;
             }
-            if (!leadingZero) {
-                result.append(digit);
+            if (started) {
+                result += digits[count];
             }
         }
-        if (leadingZero) {
+        if (result.equals("")) {
             return "0";
-        }
-        return result.toString();
-    }
-
-
-    public HugeInteger add(HugeInteger otherNumber) {
-        HugeInteger result = new HugeInteger();
-        int leftOver = 0;
-
-        for (int index = SIZE - 1; index >= 0; index--) {
-            int columnSum = digits[index] + otherNumber.digits[index] + leftOver;
-            result.digits[index] = columnSum % 10;
-            leftOver = columnSum / 10;
         }
         return result;
     }
 
+    public HugeInteger add(HugeInteger secondNumber) {
+        HugeInteger result = new HugeInteger();
+        int carry = 0;
+        for (int count = 39; count >= 0; count--) {
+            int sum = digits[count] + secondNumber.digits[count] + carry;
+            result.digits[count] = sum % 10;
+            carry = sum / 10;
+        }
+        return result;
+    }
 
-    public HugeInteger subtract(HugeInteger otherNumber) {
+    public HugeInteger subtract(HugeInteger secondNumber) {
         HugeInteger result = new HugeInteger();
         int borrow = 0;
-
-        for (int index = SIZE - 1; index >= 0; index--) {
-            int columnDifference = digits[index] - otherNumber.digits[index] - borrow;
-            if (columnDifference < 0) {
-                columnDifference += 10;
+        for (int count = 39; count >= 0; count--) {
+            int difference = digits[count] - secondNumber.digits[count] - borrow;
+            if (difference < 0) {
+                difference = difference + 10;
                 borrow = 1;
             } else {
                 borrow = 0;
             }
-            result.digits[index] = columnDifference;
+            result.digits[count] = difference;
         }
         return result;
     }
 
-
-    public boolean isEqualTo(HugeInteger otherNumber) {
-        for (int index = 0; index < digits.length; index++) {
-            if (digits[index] != otherNumber.digits[index]) {
+    public boolean isEqualTo(HugeInteger secondNumber) {
+        for (int count = 0; count < digits.length; count++) {
+            if (digits[count] != secondNumber.digits[count]) {
                 return false;
             }
         }
-
         return true;
     }
 
+    public boolean isNotEqualTo(HugeInteger secondNumber) {
+        return !isEqualTo(secondNumber);
 
-    public boolean isNotEqualTo(HugeInteger otherNumber) {
-        return !isEqualTo(otherNumber);
     }
 
-    public boolean isGreaterThan(HugeInteger otherNumber) {
-
-        for (int index = 0; index < digits.length; index++) {
-            if (digits[index] > otherNumber.digits[index]) {
+    public boolean isGreaterThan(HugeInteger secondNumber) {
+        for (int count = 0; count < digits.length; count++) {
+            if (digits[count] > secondNumber.digits[count]) {
                 return true;
             }
-            if (digits[index] < otherNumber.digits[index]) {
+            if (digits[count] < secondNumber.digits[count]) {
                 return false;
             }
         }
         return false;
     }
 
-
-    public boolean isLessThan(HugeInteger otherNumber) {
-        for (int index = 0; index < digits.length; index++) {
-            if (digits[index] < otherNumber.digits[index]) {
+    public boolean isLessThan(HugeInteger secondNumber) {
+        for (int count = 0; count < digits.length; count++) {
+            if (digits[count] < secondNumber.digits[count]) {
                 return true;
             }
-            if (digits[index] > otherNumber.digits[index]) {
+            if (digits[count] > secondNumber.digits[count]) {
                 return false;
             }
         }
-
         return false;
+
     }
 
-
-    public boolean isGreaterThanOrEqualTo(HugeInteger otherNumber) {
-
-        return isGreaterThan(otherNumber) || isEqualTo(otherNumber);
+    public boolean isGreaterThanOrEqualTo(HugeInteger secondNumber) {
+        return isGreaterThan(secondNumber) || isEqualTo(secondNumber);
     }
 
-    public boolean isLessThanOrEqualTo(HugeInteger otherNumber) {
-
-        return isLessThan(otherNumber) || isEqualTo(otherNumber);
+    public boolean isLessThanOrEqualTo(HugeInteger secondNumber) {
+        return isLessThan(secondNumber) || isEqualTo(secondNumber);
     }
 
     public boolean isZero() {
-        for (int digit : digits) {
-            if (digit != 0) {
+        for (int count = 0; count < digits.length; count++) {
+            if (digits[count] != 0) {
                 return false;
             }
         }
