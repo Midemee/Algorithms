@@ -5,11 +5,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class HugeIntegerTest {
 
     HugeInteger hugeIntegers = new HugeInteger();
+
     @Test
     public void testFor_parseStringToArray(){
         String digits = "9876543219876543219876543219876543212345";
-        int[] expected = {9,8,7,6,5,4,3,2,1,9,8,7,6,5,4,3,2,1,9,8,7,6,5,4,3,2,1,9,8,7,6,5,4,3,2,1,2,3,4,5};
-        assertArrayEquals(expected, hugeIntegers.parse(digits));
+        hugeIntegers.parse(digits);
+        assertEquals(digits, hugeIntegers.toString());
     }
 
     @Test
@@ -49,9 +50,10 @@ public class HugeIntegerTest {
         HugeInteger hugeIntegersTwo = new HugeInteger();
         String digitTwo = "111000";
         hugeIntegersTwo.parse(digitTwo);
-        hugeIntegers.add(hugeIntegersTwo);
-        int[] summedIntegers = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,2,2,2,0,0,0};
-        assertArrayEquals(hugeIntegers.getNumberArray(), summedIntegers);
+
+        HugeInteger sum = hugeIntegers.add(hugeIntegersTwo);
+
+        assertEquals("222000", sum.toString());
     }
 
     @Test
@@ -63,10 +65,9 @@ public class HugeIntegerTest {
         String digitTwo = "100";
         hugeIntegersTwo.parse(digitTwo);
 
-        hugeIntegers.add(hugeIntegersTwo);
-        int[] summedIntegers = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,0,0,0,0};
+        HugeInteger sum = hugeIntegers.add(hugeIntegersTwo);
 
-        assertArrayEquals(hugeIntegers.getNumberArray(), summedIntegers);
+        assertEquals("10000", sum.toString());
     }
 
     @Test
@@ -78,9 +79,9 @@ public class HugeIntegerTest {
         String digitTwo = "40002838289";
         hugeIntegersTwo.parse(digitTwo);
 
-        hugeIntegers.subtract(hugeIntegersTwo);
-        int[] subtractedIntegers = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,5,0,0,0,0,6,0,9,8,0,9,5,3,7,3,1};
-        assertArrayEquals(hugeIntegers.getNumberArray(),subtractedIntegers);
+        HugeInteger difference = hugeIntegers.subtract(hugeIntegersTwo);
+
+        assertEquals("5000060980953731", difference.toString());
     }
 
     @Test
@@ -117,5 +118,36 @@ public class HugeIntegerTest {
         hugeIntegersTwo.parse(digitTwo);
 
         assertTrue(hugeIntegers.isLessThan(hugeIntegersTwo));
+    }
+
+    @Test
+    public void equalHugeIntegersAreGreaterThanOrEqualToEachOtherTest(){
+        String digitOne = "555555555555";
+        hugeIntegers.parse(digitOne);
+
+        HugeInteger hugeIntegersTwo = new HugeInteger();
+        String digitTwo = "555555555555";
+        hugeIntegersTwo.parse(digitTwo);
+
+        assertTrue(hugeIntegers.isGreaterThanOrEqualTo(hugeIntegersTwo));
+    }
+
+    @Test
+    public void equalHugeIntegersAreLessThanOrEqualToEachOtherTest(){
+        String digitOne = "555555555555";
+        hugeIntegers.parse(digitOne);
+
+        HugeInteger hugeIntegersTwo = new HugeInteger();
+        String digitTwo = "555555555555";
+        hugeIntegersTwo.parse(digitTwo);
+
+        assertTrue(hugeIntegers.isLessThanOrEqualTo(hugeIntegersTwo));
+    }
+
+    @Test
+    public void parsedZeroIsZeroTest(){
+        hugeIntegers.parse("0");
+
+        assertTrue(hugeIntegers.isZero());
     }
 }

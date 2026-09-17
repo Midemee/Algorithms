@@ -1,90 +1,131 @@
-import java.math.BigInteger;
-import java.util.Arrays;
-
 public class HugeInteger {
 
-    private int[] numberList = new int[40];
+    private static final int SIZE = 40;
+    private int[] digits = new int[SIZE];
 
-    public HugeInteger(){
-        Arrays.fill(numberList,-1);
-    }
 
-    public int[] getNumberArray() {
-        return numberList;
-    }
+    public void parse(String value) {
 
-    public int[] parse(String digits) {
-        int startIndex = 40 - digits.length();
-
-        for(int index = 0; index < digits.length(); index++){
-            char number = digits.charAt(index);
-            numberList[startIndex++] = Character.getNumericValue(number);
+        for (int index = 0; index < digits.length; index++) {
+            digits[index] = 0;
         }
-        return numberList;
+        int arrayIndex = digits.length - value.length();
+
+        for (int index = 0; index < value.length(); index++) {
+            digits[arrayIndex + index] = Character.getNumericValue(value.charAt(index));
+        }
     }
 
-    public String toString(){
-        String numbers = "";
-        for(int index = 0; index < numberList.length; index++){
-            if(numberList[index] != -1) numbers += numberList[index];
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        boolean leadingZero = true;
+        for (int digit : digits) {
+            if (digit != 0) {
+                leadingZero = false;
+            }
+            if (!leadingZero) {
+                result.append(digit);
+            }
         }
-        return numbers;
+        if (leadingZero) {
+            return "0";
+        }
+        return result.toString();
     }
 
-    public boolean isEqualTo(HugeInteger hugeIntegers) {
-        for(int index = 0; index < numberList.length; index++){
-            if(numberList[index] != hugeIntegers.numberList[index]) return false;
+
+    public HugeInteger add(HugeInteger otherNumber) {
+        HugeInteger result = new HugeInteger();
+        int leftOver = 0;
+
+        for (int index = SIZE - 1; index >= 0; index--) {
+            int columnSum = digits[index] + otherNumber.digits[index] + leftOver;
+            result.digits[index] = columnSum % 10;
+            leftOver = columnSum / 10;
         }
+        return result;
+    }
+
+
+    public HugeInteger subtract(HugeInteger otherNumber) {
+        HugeInteger result = new HugeInteger();
+        int borrow = 0;
+
+        for (int index = SIZE - 1; index >= 0; index--) {
+            int columnDifference = digits[index] - otherNumber.digits[index] - borrow;
+            if (columnDifference < 0) {
+                columnDifference += 10;
+                borrow = 1;
+            } else {
+                borrow = 0;
+            }
+            result.digits[index] = columnDifference;
+        }
+        return result;
+    }
+
+
+    public boolean isEqualTo(HugeInteger otherNumber) {
+        for (int index = 0; index < digits.length; index++) {
+            if (digits[index] != otherNumber.digits[index]) {
+                return false;
+            }
+        }
+
         return true;
     }
 
-    public boolean isNotEqualTo(HugeInteger hugeIntegers) {
-        for(int index = 0; index < numberList.length; index++){
-            if(numberList[index] != hugeIntegers.numberList[index]) return true;
+
+    public boolean isNotEqualTo(HugeInteger otherNumber) {
+        return !isEqualTo(otherNumber);
+    }
+
+    public boolean isGreaterThan(HugeInteger otherNumber) {
+
+        for (int index = 0; index < digits.length; index++) {
+            if (digits[index] > otherNumber.digits[index]) {
+                return true;
+            }
+            if (digits[index] < otherNumber.digits[index]) {
+                return false;
+            }
         }
         return false;
     }
 
-    public void add(HugeInteger hugeInteger){
-        String firstNumber = this.toString();
-        String secondNumber = hugeInteger.toString();
-        BigInteger numberOne = new BigInteger(firstNumber);
-        BigInteger numberTwo= new BigInteger(secondNumber);
-        BigInteger sum = numberOne.add(numberTwo);
-        this.parse(sum.toString());
-    }
 
-    public void subtract(HugeInteger hugeInteger) {
-        String firstNumber = this.toString();
-        String secondNumber = hugeInteger.toString();
-        BigInteger numberOne = new BigInteger(firstNumber);
-        BigInteger numberTwo= new BigInteger(secondNumber);
-        BigInteger difference = numberOne.subtract(numberTwo);
-        this.parse(difference.toString());
-    }
+    public boolean isLessThan(HugeInteger otherNumber) {
+        for (int index = 0; index < digits.length; index++) {
+            if (digits[index] < otherNumber.digits[index]) {
+                return true;
+            }
+            if (digits[index] > otherNumber.digits[index]) {
+                return false;
+            }
+        }
 
-    public boolean isGreaterThan(HugeInteger hugeInteger) {
-        String firstNumber = this.toString();
-        String secondNumber = hugeInteger.toString();
-        BigInteger numberOne = new BigInteger(firstNumber);
-        BigInteger numberTwo= new BigInteger(secondNumber);
-        return numberOne.compareTo(numberTwo) > 0;
+        return false;
     }
 
 
-    public boolean isLessThan(HugeInteger hugeInteger) {
-        String firstNumber = this.toString();
-        String secondNumber = hugeInteger.toString();
-        BigInteger numberOne = new BigInteger(firstNumber);
-        BigInteger numberTwo= new BigInteger(secondNumber);
-        return numberOne.compareTo(numberTwo) < 0;
+    public boolean isGreaterThanOrEqualTo(HugeInteger otherNumber) {
+
+        return isGreaterThan(otherNumber) || isEqualTo(otherNumber);
     }
 
-    public boolean isGreaterThanOrEqualTo(HugeInteger hugeInteger) {
-        return isGreaterThan(hugeInteger) || isEqualTo(hugeInteger);
+    public boolean isLessThanOrEqualTo(HugeInteger otherNumber) {
+
+        return isLessThan(otherNumber) || isEqualTo(otherNumber);
     }
 
-    public boolean isLessThanOrEqualTo(HugeInteger hugeInteger) {
-        return isLessThan(hugeInteger) || isEqualTo(hugeInteger);
+    public boolean isZero() {
+        for (int digit : digits) {
+            if (digit != 0) {
+                return false;
+            }
+        }
+        return true;
     }
 }
