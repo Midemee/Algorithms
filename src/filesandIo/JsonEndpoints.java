@@ -1,13 +1,11 @@
 package filesandIo;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
+
 
 public class JsonEndpoints {
     public static void main(){
@@ -41,8 +39,8 @@ public class JsonEndpoints {
             byte[] commentBytes = commentInput.readAllBytes();
             Files.write(Paths.get(commentFileLocation), commentBytes);
 
-            byte[] commentsBytes = input2.readAllBytes();
-            Files.write(Paths.get(fileLocation2), commentsBytes);
+            byte[] postBytes = input2.readAllBytes();
+            Files.write(Paths.get(fileLocation2), postBytes);
 
             byte[] comments2Bytes = commentInput2.readAllBytes();
             Files.write(Paths.get(commentFileLocation2), comments2Bytes);

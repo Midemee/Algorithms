@@ -1,8 +1,3 @@
-P.nwankwo@native.semicolon.africa
-Email validation
-
-Password validation Between 8 and 16 characters
-No spaces
-one of these special characters(@_+#)
-at lease one digit
+Write a function that takes a sentence and returns the shortest word from the sentence
+Write a function that takes an array of numbers and returns an array of the square of the numbers in ascending order
 
